@@ -17,14 +17,25 @@ export class CredentialsComponent implements OnInit {
   constructor(private formBuilder: FormBuilder) { }
 
   public showRegisterForm: boolean = false;
+  public showLoginPassword: boolean = false;
+  public showRegisterPassword: boolean = false;
 
   ngOnInit() { }
 
+  /**
+   * patter that validates email to be in the correct format
+   */
   private emailRegexpPatern =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+  /**
+   * pattern that validates password to have numbers, uppercase, lowercase and special characters
+   */
   private passwordRegexpPatter = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
 
+  /**
+   * create the reactive login form
+   */
   public loginForm = new FormGroup({
     loginEmailControl:new FormControl('', {
       validators: [Validators.required, Validators.email, Validators.minLength(6),
@@ -35,12 +46,12 @@ export class CredentialsComponent implements OnInit {
     loginPwdControl: new FormControl('', {
       validators: [Validators.required, Validators.minLength(8),
         Validators.pattern(this.passwordRegexpPatter)],
-      //updateOn: 'blur'
-    }),
-    loginPwdConfirmControl: new FormControl(''),
+    })
   });
-  public showLoginPassword: boolean = false;
 
+  /**
+   * create reactive register form
+   */
   public registerForm = new FormGroup({
     registerEmailControl:new FormControl('', {
       validators: [Validators.required, Validators.email, Validators.minLength(6),
@@ -51,47 +62,70 @@ export class CredentialsComponent implements OnInit {
     registerPwdControl: new FormControl('', {
       validators: [Validators.required, Validators.minLength(8),
         Validators.pattern(this.passwordRegexpPatter)],
-      //updateOn: 'blur'
     }),
     registerPwdConfirmControl: new FormControl(''),
   });
 
-  public showRegisterPassword: boolean = false;
 
-
-  public clearLogin():void {
-    console.log(this.loginForm.value);
+  private clearLoginForm(): void {
     this.loginForm.setValue({
-      loginEmailControl: 'sdasdasdasdas',
-      loginPwdControl: 'asdadas'
+      loginEmailControl: '',
+      loginPwdControl: ''
     });
-    //this.loginForm.setValue('');
+
+    this.loginForm.markAsPristine();
+    this.loginForm.markAsUntouched();
   }
 
-  public onLoginSubmit():void {
+  private clearRegisterForm(): void {
+    this.registerForm.setValue({
+      registerEmailControl: '',
+      registerPwdControl: '',
+      registerPwdConfirmControl: ''
+    });
+
+    this.registerForm.markAsPristine();
+    this.registerForm.markAsUntouched();
+  }
+
+  private clearForms(): void {
+    this.clearLoginForm();
+    this.clearRegisterForm();
+  }
+
+  public onLoginSubmit(): void {
     console.log('submitting');
     console.log(this.loginForm.get('loginEmailControl').errors);
   }
 
-  public onRegisterSubmit():void {
+  public onRegisterSubmit(): void {
     console.log('submitting');
     console.log(this.registerForm.get('registerEmailControl').errors);
   }
 
-  public showHideLoginPassword(): void {
+  public toggleShowLoginPassword(): void {
     this.showLoginPassword = !this.showLoginPassword;
   }
 
-  public showHideRegisterPassword(): void {
+  public toggleShowRegisterPassword(): void {
     this.showRegisterPassword = !this.showRegisterPassword;
   }
 
+  /**
+   * based on the value of this.<loginOrRegister>Password returns the input type to be text or password.
+   * to show either dots or textual password in the frontend
+   * @param loginOrRegister string should be either 'login' or 'register'
+   */
   public getCredentialsFieldType(loginOrRegister: string): string {
     return this['show' + loginOrRegister.charAt(0).toUpperCase() + loginOrRegister.slice(1)+'Password']
       ? 'text' : 'password' ;
   }
 
-  public getFormControlErrors(formControlName: string): Array<string> {
+  /**
+   * translate validator errors to an array of strings that can be displayed to end user
+   * @param formControlName name of the formcontrol for which we want errors
+   */
+  public getFormControlErrors(formControlName: string): string[] {
     let errors: ValidationErrors = this.showRegisterForm ?
       this.registerForm.get(formControlName).errors : this.loginForm.get(formControlName).errors;
     if (!errors){
@@ -118,13 +152,15 @@ export class CredentialsComponent implements OnInit {
     })
   }
 
-  public getNotice(): Array<string> {
+  public getNotice(): string[] {
     return this.showRegisterForm
       ? ["Already have an account? ", "Login here"]
       : ["Don't have an account? ", "Register here"];
   }
 
+
   public switchBetweenLoginAndRegister(): void {
+    this.clearForms();
     this.showRegisterForm = !this.showRegisterForm;
   }
 }

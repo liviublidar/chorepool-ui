@@ -3,9 +3,17 @@
 $headingFont: 'Domine', serif;
 $paragraphFont: 'Roboto', sans-serif;
 $smallParagraphFont: 'Ubuntu', sans-serif;
+$stretchFont: 'Varela Round', sans-serif;
+
+$accent1: #cc296a;
+$accent2: #f58144;
+$accent2gradient: #FDC830;
+$background1: #1794d7;
+$background2:  #804cda;
+
 
 body {
   min-height: 100vh;
-  background: linear-gradient(#1794d7, #804cda);
+  background: linear-gradient($background1, $background2);
   overflow: hidden;
 }
