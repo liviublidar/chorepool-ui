@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthenticationService } from '../services/authentication.service';
 import {
   FormGroup,
   FormControl,
@@ -6,6 +7,8 @@ import {
   Validators,
   ValidationErrors,
 } from "@angular/forms";
+import { ThrowStmt } from '@angular/compiler';
+
 
 @Component({
   selector: 'credentials',
@@ -14,7 +17,10 @@ import {
 })
 export class CredentialsComponent implements OnInit {
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private authService: AuthenticationService
+  ) { }
 
   public showRegisterForm: boolean = false;
   public showLoginPassword: boolean = false;
@@ -95,7 +101,11 @@ export class CredentialsComponent implements OnInit {
 
   public onLoginSubmit(): void {
     console.log('submitting');
-    console.log(this.loginForm.get('loginEmailControl').errors);
+  /*     console.log(this.loginForm.get('loginEmailControl').errors); */
+    this.authService.login().subscribe((data) => {
+      console.log(data)
+    })
+
   }
 
   public onRegisterSubmit(): void {

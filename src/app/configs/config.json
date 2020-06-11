@@ -1,5 +1,9 @@
 {
   "project":{
     "name": "Chore Pool"
+  },
+
+  "app": {
+    "mainApiDomain": "https://google.com"
   }
 }
