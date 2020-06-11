@@ -152,12 +152,14 @@ export class CredentialsComponent implements OnInit {
     })
   }
 
+  /**
+   * gets the text underneath the forms based on where you are
+   */
   public getNotice(): string[] {
     return this.showRegisterForm
       ? ["Already have an account? ", "Login here"]
       : ["Don't have an account? ", "Register here"];
   }
-
 
   public switchBetweenLoginAndRegister(): void {
     this.clearForms();

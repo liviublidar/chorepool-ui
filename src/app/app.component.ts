@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { IConfiguration, ConfigService } from '../services/config.service';
+import { IConfiguration, ConfigService } from './services/config.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -11,12 +12,13 @@ export class AppComponent {
   private configuration: IConfiguration;
 
   constructor(
-    private configService: ConfigService
+    private configService: ConfigService,
+    private titleService: Title
   ){
     this.configuration = this.configService.getConfig();
   }
 
   ngOnInit(){
-    //console.log(this.configService.getConfig()); //enable for testing config service
+    this.titleService.setTitle(this.configuration.project.name)
   }
 }

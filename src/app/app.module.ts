@@ -1,10 +1,10 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
-import { ConfigService} from '../services/config.service';
+import { ConfigService} from './services/config.service';
 import { CredentialsComponent } from './credentials/credentials.component';
 
 @NgModule({
@@ -18,7 +18,8 @@ import { CredentialsComponent } from './credentials/credentials.component';
     ReactiveFormsModule
   ],
   providers: [
-    ConfigService
+    ConfigService,
+    Title
   ],
   bootstrap: [AppComponent]
 })
