@@ -25,8 +25,13 @@ export class CredentialsComponent implements OnInit {
   public showRegisterForm: boolean = false;
   public showLoginPassword: boolean = false;
   public showRegisterPassword: boolean = false;
+  public showSplash: boolean = true;
 
-  ngOnInit() { }
+  ngOnInit() {
+    setTimeout(() => {
+      this.showSplash = false;
+    }, 2000);
+  }
 
   /**
    * patter that validates email to be in the correct format

@@ -9,11 +9,27 @@ $accent1: #cc296a;
 $accent2: #f58144;
 $accent2gradient: #FDC830;
 $background1: #1794d7;
-$background2:  #804cda;
+$background1Rgba: rgba(23, 148, 215, 1);
+$background2: #804cda;
+$background2Rgba: rgba(128, 76, 218, 1);
+$background-gradient: linear-gradient(to bottom, $background1, $background2);
 
+@mixin noticeStyle {
+  font-family: $paragraphFont;
+  font-size: .92em;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  color: #ffffff;
+}
 
 body {
   min-height: 100vh;
-  background: linear-gradient($background1, $background2);
+  background-image:  url("/assets/splash/mobile-splash-m.jpg"), $background-gradient;
+  background-blend-mode: soft-light;
   overflow: hidden;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }

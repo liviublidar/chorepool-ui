@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IConfiguration, ConfigService } from './services/config.service';
 import { Title } from '@angular/platform-browser';
 
@@ -7,7 +7,7 @@ import { Title } from '@angular/platform-browser';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   public title: string;
   private configuration: IConfiguration;
 
@@ -19,6 +19,6 @@ export class AppComponent {
   }
 
   ngOnInit(){
-    this.titleService.setTitle(this.configuration.project.name)
+    this.titleService.setTitle(this.configuration.project.name);
   }
 }
