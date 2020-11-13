@@ -6,15 +6,14 @@ import {
   FormBuilder,
   Validators,
   ValidationErrors,
-} from "@angular/forms";
-import { ThrowStmt } from '@angular/compiler';
-
+} from '@angular/forms';
 
 @Component({
-  selector: 'credentials',
+  selector: 'app-credentials',
   templateUrl: './credentials.component.html',
   styleUrls: ['./credentials.component.scss']
 })
+
 export class CredentialsComponent implements OnInit {
 
   constructor(
@@ -26,12 +25,6 @@ export class CredentialsComponent implements OnInit {
   public showLoginPassword: boolean = false;
   public showRegisterPassword: boolean = false;
   public showSplash: boolean = true;
-
-  ngOnInit() {
-    setTimeout(() => {
-      this.showSplash = false;
-    }, 2000);
-  }
 
   /**
    * patter that validates email to be in the correct format
@@ -48,10 +41,10 @@ export class CredentialsComponent implements OnInit {
    * create the reactive login form
    */
   public loginForm = new FormGroup({
-    loginEmailControl:new FormControl('', {
+    loginEmailControl: new FormControl('', {
       validators: [Validators.required, Validators.email, Validators.minLength(6),
-      Validators.pattern(this.emailRegexpPatern)],
-      //updateOn: 'blur'
+        Validators.pattern(this.emailRegexpPatern)],
+        // updateOn: 'blur'
     }),
 
     loginPwdControl: new FormControl('', {
@@ -64,10 +57,10 @@ export class CredentialsComponent implements OnInit {
    * create reactive register form
    */
   public registerForm = new FormGroup({
-    registerEmailControl:new FormControl('', {
+    registerEmailControl: new FormControl('', {
       validators: [Validators.required, Validators.email, Validators.minLength(6),
         Validators.pattern(this.emailRegexpPatern)],
-      //updateOn: 'blur'
+        // updateOn: 'blur'
     }),
 
     registerPwdControl: new FormControl('', {
@@ -77,6 +70,11 @@ export class CredentialsComponent implements OnInit {
     registerPwdConfirmControl: new FormControl(''),
   });
 
+  ngOnInit() {
+    setTimeout(() => {
+      this.showSplash = false;
+    }, 2000);
+  }
 
   private clearLoginForm(): void {
     this.loginForm.setValue({
@@ -108,8 +106,8 @@ export class CredentialsComponent implements OnInit {
     console.log('submitting');
   /*     console.log(this.loginForm.get('loginEmailControl').errors); */
     this.authService.login().subscribe((data) => {
-      console.log(data)
-    })
+      console.log(data);
+    });
 
   }
 
@@ -131,9 +129,10 @@ export class CredentialsComponent implements OnInit {
    * to show either dots or textual password in the frontend
    * @param loginOrRegister string should be either 'login' or 'register'
    */
-  public getCredentialsFieldType(loginOrRegister: string): string {
-    return this['show' + loginOrRegister.charAt(0).toUpperCase() + loginOrRegister.slice(1)+'Password']
-      ? 'text' : 'password' ;
+  public credentialsFieldTypeResolver(loginOrRegister: string): string {
+    return this['show' + loginOrRegister.charAt(0).toUpperCase() + loginOrRegister.slice(1) + 'Password']
+      ? 'text'
+      : 'password' ;
   }
 
   /**
@@ -141,30 +140,37 @@ export class CredentialsComponent implements OnInit {
    * @param formControlName name of the formcontrol for which we want errors
    */
   public getFormControlErrors(formControlName: string): string[] {
-    let errors: ValidationErrors = this.showRegisterForm ?
-      this.registerForm.get(formControlName).errors : this.loginForm.get(formControlName).errors;
+    const errors: ValidationErrors = this.showRegisterForm
+      ? this.registerForm.get(formControlName).errors
+      : this.loginForm.get(formControlName).errors;
+
     if (!errors){
       return [];
     }
-    return Object.keys(errors).map((iterableItem) => {
+
+    return Object.keys(errors).map((iterableItem: string) => {
       let errorMessage: string;
+
       switch (iterableItem) {
         case 'email':
           errorMessage = 'You need a valid email address';
           break;
+
         case 'minlength':
           errorMessage = `You need at least ${errors.minlength.requiredLength} characters`;
           break;
+
         case 'pattern':
           errorMessage = formControlName.endsWith('EmailControl')
             ? 'An email address has the following format: name@domain.com'
-            : "You need numbers, uppercase, lowercase and special characters";
+            : 'You need numbers, uppercase, lowercase and special characters';
           break;
+
         case 'required':
           errorMessage = 'This field is required';
       }
       return errorMessage;
-    })
+    });
   }
 
   /**
@@ -172,10 +178,14 @@ export class CredentialsComponent implements OnInit {
    */
   public getNotice(): string[] {
     return this.showRegisterForm
-      ? ["Already have an account? ", "Login here"]
-      : ["Don't have an account? ", "Register here"];
+      ? ['Already have an account? ', 'Login here']
+      : ['Don\'t have an account? ', 'Register here'];
   }
 
+  /**
+   * shows login or register forms respectively after clearing them
+   * returns void
+   */
   public switchBetweenLoginAndRegister(): void {
     this.clearForms();
     this.showRegisterForm = !this.showRegisterForm;

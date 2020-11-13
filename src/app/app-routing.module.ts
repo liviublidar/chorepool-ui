@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { CredentialsComponent } from './credentials/credentials.component'
+import { CredentialsComponent } from './credentials/credentials.component';
 
 const routes: Routes = [
   {
