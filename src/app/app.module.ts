@@ -8,11 +8,13 @@ import { AppComponent } from './app.component';
 import { ConfigService} from './services/config.service';
 import { CredentialsComponent } from './credentials/credentials.component';
 import { AuthenticationService } from './services/authentication.service';
+import { PunchlineComponent } from './punchline/punchline.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CredentialsComponent,
+    PunchlineComponent,
   ],
   imports: [
     BrowserModule,

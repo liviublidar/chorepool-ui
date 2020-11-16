@@ -4,7 +4,12 @@ $headingFont: 'Domine', serif;
 $paragraphFont: 'Roboto', sans-serif;
 $smallParagraphFont: 'Ubuntu', sans-serif;
 $stretchFont: 'Varela Round', sans-serif;
+$brandingFont: 'Montserrat Subrayada', sans-serif;
 
+$mobileBreakPoint: 480px;
+$heightBreakpoint: 430px;
+
+$normalText: #ffffff;
 $accent1: #cc296a;
 $accent2: #f58144;
 $accent2gradient: #FDC830;
@@ -15,21 +20,25 @@ $background2Rgba: rgba(128, 76, 218, 1);
 $background-gradient: linear-gradient(to bottom, $background1, $background2);
 
 @mixin noticeStyle {
-  font-family: $paragraphFont;
-  font-size: .92em;
   font-weight: 500;
   font-stretch: normal;
   font-style: normal;
   letter-spacing: normal;
-  color: #ffffff;
+  color: $normalText;
 }
 
 body {
+  font-family: $paragraphFont;
   min-height: 100vh;
   background-image:  url("/assets/splash/mobile-splash-m.jpg"), $background-gradient;
   background-blend-mode: soft-light;
-  overflow: hidden;
+  overflow-x: hidden;
+  margin: 0;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+
+  @media (max-width: $mobileBreakPoint) {
+    background-image:  url("/assets/splash/mobile-splash-s.jpg"), $background-gradient;
+  }
 }
