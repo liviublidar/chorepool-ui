@@ -1,10 +1,17 @@
 {
-  "name": "ui",
+  "name": "com.chorepool.app",
   "version": "0.0.0",
+  "displayName": "ChorePool",
+  "main": "index.js",
+  "keywords": [
+    "ecosystem:cordova"
+  ],
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0",
     "build": "ng build",
+    "buildAndroid": "cordova build android",
+    "emulateAndroid": "cordova emulate android",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -32,6 +39,8 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",
     "codelyzer": "^5.1.2",
+    "cordova-android": "^9.0.0",
+    "cordova-plugin-whitelist": "^1.3.4",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "~5.0.0",
@@ -43,5 +52,13 @@
     "ts-node": "~7.0.0",
     "tslint": "~6.1.0",
     "typescript": "~3.9.6"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-whitelist": {}
+    },
+    "platforms": [
+      "android"
+    ]
   }
 }
