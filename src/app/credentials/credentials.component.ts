@@ -1,3 +1,18 @@
+function passwordMatchValidator(g: FormGroup) {
+  return g.get('registerPassword').value === g.get('registerPassword_confirmation').value
+    ? null : {'mismatch': true};
+}
+
+function hasNoErrors(g: FormGroup) {
+  for (const [formControlName, formControl] of Object.entries(g.controls)) {
+    if (formControl.errors){
+      console.log('this is what i think is error', formControl.errors);
+      return {'hasAnyError': true};
+    }
+  }
+  return null;
+}
+
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import {
@@ -24,7 +39,9 @@ export class CredentialsComponent implements OnInit {
   public showRegisterForm: boolean = false;
   public showLoginPassword: boolean = false;
   public showRegisterPassword: boolean = false;
+  public showRegisterConfirmPassword: boolean = false;
   public showSplash: boolean = true;
+  public hasFamily: boolean = false;
 
   /**
    * patter that validates email to be in the correct format
@@ -41,45 +58,74 @@ export class CredentialsComponent implements OnInit {
    * create the reactive login form
    */
   public loginForm = new FormGroup({
-    loginEmailControl: new FormControl('', {
+    email: new FormControl('', {
       validators: [Validators.required, Validators.email, Validators.minLength(6),
         Validators.pattern(this.emailRegexpPatern)],
         // updateOn: 'blur'
     }),
 
-    loginPwdControl: new FormControl('', {
+    password: new FormControl('', {
       validators: [Validators.required, Validators.minLength(8),
         Validators.pattern(this.passwordRegexpPatter)],
     })
   });
 
+
   /**
    * create reactive register form
    */
   public registerForm = new FormGroup({
-    registerEmailControl: new FormControl('', {
-      validators: [Validators.required, Validators.email, Validators.minLength(6),
-        Validators.pattern(this.emailRegexpPatern)],
-        // updateOn: 'blur'
+    name: new FormControl('', {
+      validators: [Validators.required, Validators.minLength(3)],
     }),
 
-    registerPwdControl: new FormControl('', {
+    dob: new FormControl('', {
+      validators: [Validators.required],
+    }),
+
+    email: new FormControl('', {
+      validators: [Validators.required, Validators.email, Validators.minLength(6),
+        Validators.pattern(this.emailRegexpPatern)],
+      // updateOn: 'blur'
+    }),
+
+    registerPassword: new FormControl('', {
       validators: [Validators.required, Validators.minLength(8),
         Validators.pattern(this.passwordRegexpPatter)],
     }),
-    registerPwdConfirmControl: new FormControl(''),
-  });
+
+    code: new FormControl(''),
+
+    registerPassword_confirmation: new FormControl('', {
+      validators: [Validators.required]
+    }),
+
+    familyCodeControl: new FormControl(''),
+    household: new FormControl(''),
+  }, { validators: [passwordMatchValidator, hasNoErrors], updateOn: 'change'});
 
   ngOnInit() {
     setTimeout(() => {
       this.showSplash = false;
     }, 2000);
+
+    this.registerForm.controls.familyCodeControl.valueChanges.subscribe(value => {
+      this.hasFamily = value;
+      if (this.hasFamily === true) {
+        this.registerForm.controls.code.setValidators(this.noWhitespaceValidator);
+      } else {
+        this.registerForm.get('code').reset();
+        this.registerForm.get('code').clearValidators();
+        this.registerForm.get('code').clearAsyncValidators();
+        this.registerForm.get('code').updateValueAndValidity();
+      }
+    });
   }
 
   private clearLoginForm(): void {
     this.loginForm.setValue({
-      loginEmailControl: '',
-      loginPwdControl: ''
+      email: '',
+      password: ''
     });
 
     this.loginForm.markAsPristine();
@@ -88,9 +134,14 @@ export class CredentialsComponent implements OnInit {
 
   private clearRegisterForm(): void {
     this.registerForm.setValue({
-      registerEmailControl: '',
-      registerPwdControl: '',
-      registerPwdConfirmControl: ''
+      name: '',
+      dob: '',
+      email: '',
+      registerPassword: '',
+      registerPassword_confirmation: '',
+      code: '',
+      familyCodeControl: '',
+      household: ''
     });
 
     this.registerForm.markAsPristine();
@@ -103,17 +154,20 @@ export class CredentialsComponent implements OnInit {
   }
 
   public onLoginSubmit(): void {
-    console.log('submitting');
-  /*     console.log(this.loginForm.get('loginEmailControl').errors); */
-    this.authService.login().subscribe((data) => {
+    this.authService.login(this.loginForm.value).subscribe((data) => {
       console.log(data);
     });
 
   }
 
   public onRegisterSubmit(): void {
-    console.log('submitting');
-    console.log(this.registerForm.get('registerEmailControl').errors);
+    if (this.registerForm.errors){
+      alert('complete the form with correct values');
+    } else {
+      this.authService.register(this.registerForm.value).subscribe((response) => {
+        console.log('register response', response);
+      });
+    }
   }
 
   public toggleShowLoginPassword(): void {
@@ -124,13 +178,17 @@ export class CredentialsComponent implements OnInit {
     this.showRegisterPassword = !this.showRegisterPassword;
   }
 
+  public toggleShowRegisterConfirmPassword(): void {
+    this.showRegisterConfirmPassword = !this.showRegisterConfirmPassword;
+  }
+
   /**
    * based on the value of this.<loginOrRegister>Password returns the input type to be text or password.
    * to show either dots or textual password in the frontend
    * @param loginOrRegister string should be either 'login' or 'register'
    */
-  public credentialsFieldTypeResolver(loginOrRegister: string): string {
-    return this['show' + loginOrRegister.charAt(0).toUpperCase() + loginOrRegister.slice(1) + 'Password']
+  public credentialsFieldTypeResolver(pwdIdentifier: string): string {
+    return this['show' + pwdIdentifier + 'Password']
       ? 'text'
       : 'password' ;
   }
@@ -189,5 +247,11 @@ export class CredentialsComponent implements OnInit {
   public switchBetweenLoginAndRegister(): void {
     this.clearForms();
     this.showRegisterForm = !this.showRegisterForm;
+  }
+
+  public noWhitespaceValidator(control: FormControl) {
+    const isWhitespace = (control.value || '').trim().length === 0;
+    const isValid = !isWhitespace;
+    return isValid ? null : { 'whitespace': true };
   }
 }

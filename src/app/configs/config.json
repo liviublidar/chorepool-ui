@@ -4,6 +4,6 @@
   },
 
   "app": {
-    "mainApiDomain": "https://google.com"
+    "mainApiDomain": "https://api.chorepool.local"
   }
 }

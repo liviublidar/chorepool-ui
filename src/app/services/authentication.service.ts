@@ -12,12 +12,12 @@ export class AuthenticationService {
     private configService: ConfigService
   ) { }
 
-  public register(): Observable<any> {
-    let url = this.configService.getConfig().app.mainApiDomain
-    return this.http.get(url);
+  public register(values): Observable<any> {
+    const url = this.configService.getConfig().app.mainApiDomain + '/register';
+    return this.http.post(url, values);
   }
-  public login(): Observable<any> {
-    let url = this.configService.getConfig().app.mainApiDomain
-    return this.http.get(url);
+  public login(values): Observable<any> {
+    const url = this.configService.getConfig().app.mainApiDomain + '/login';
+    return this.http.post(url, values);
   }
 }
