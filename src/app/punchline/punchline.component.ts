@@ -10,6 +10,7 @@ export class PunchlineComponent implements OnDestroy{
   public punchlineClass: string = 'hidden';
   private punchlineTimeout: any;
   private punchlineDelay: number = 8000;
+  private transitionTime: number = 500; // needs to match css transition time
 
   private punchlines: string[] = [
     'Your family\'s best friend',
@@ -22,39 +23,45 @@ export class PunchlineComponent implements OnDestroy{
   }
 
   ngOnDestroy() {
-    console.log('being destroyed');
     clearTimeout(this.punchlineTimeout);
   }
 
-  private testIndexOfArray(array: Array<any>, index): number {
-    return index < array.length ? index : 0;
+  /**
+   * returns first punchlines if punchline index out of bounds
+   * @param index
+   * @private
+   */
+  private getValidPunchlineIndex(index: number): number {
+    return index < this.punchlines.length ? index : 0;
   }
 
+  /**
+   * handles the update and fade of the punchline on the main login page
+   * @param index
+   * @private
+   */
   private setPunchline(index: number): void {
+    this.punchline = this.punchlines[index]; // gets initial element from punchline
 
-    console.log('new message');
-    this.punchline = this.punchlines[index]; // gets element from punchline
     setTimeout(() => {
       this.fadeIn();
-    }, 500);
+    }, this.transitionTime); // transition time
 
 
     setTimeout(() => {
       this.fadeOut();
-    }, this.punchlineDelay - 500);
+    }, this.punchlineDelay - this.transitionTime);
 
     this.punchlineTimeout = setTimeout(() => {
-      this.setPunchline(this.testIndexOfArray(this.punchlines, ++index));
+      this.setPunchline(this.getValidPunchlineIndex(++index));
     }, this.punchlineDelay);
   }
 
   private fadeIn(): void {
-    console.log('fading in');
     this.punchlineClass = 'visible';
   }
 
   private fadeOut(): void {
-    console.log('fading out');
     this.punchlineClass = 'hidden';
   }
 }
