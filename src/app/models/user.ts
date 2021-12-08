@@ -1,7 +1,13 @@
+import { Family } from "./family";
+
 export class User {
-  id: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-  token: string;
+  constructor(
+    public id: number,
+    public email: string,
+    public name: string,
+    public suspended: boolean,
+    public family: Family
+  ) {
+
+  }
 }

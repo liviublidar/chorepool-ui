@@ -30,7 +30,8 @@ $background-gradient: linear-gradient(to bottom, $background1, $background2);
 body {
   font-family: $paragraphFont;
   min-height: 100vh;
-  background-image:  url("./assets/splash/mobile-splash-m.jpg"), $background-gradient;
+/*  background-image:  url("./assets/splash/mobile-splash-m.jpg"), $background-gradient;*/
+  background-color: #354045;
   background-blend-mode: soft-light;
   overflow-x: hidden;
   margin: 0;
@@ -39,6 +40,6 @@ body {
   background-position: center;
 
   @media (max-width: $mobileBreakPoint) {
-    background-image:  url("./assets/splash/mobile-splash-s.jpg"), $background-gradient;
+/*    background-image:  url("./assets/splash/mobile-splash-s.jpg"), $background-gradient;*/
   }
 }

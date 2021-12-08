@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IConfiguration, ConfigService } from './services/config.service';
 import { Title } from '@angular/platform-browser';
+import { AuthenticationService } from "./services/authentication.service";
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,8 @@ export class AppComponent implements OnInit {
 
   constructor(
     private configService: ConfigService,
-    private titleService: Title
+    private titleService: Title,
+    private authenticationService: AuthenticationService
   ){
     this.configuration = this.configService.getConfig();
   }
