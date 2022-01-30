@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ConfigService } from './config.service';
 import { User } from "../models/user";
 import { Router } from "@angular/router";
+import { Family } from "../models/family";
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,17 @@ export class AuthenticationService {
 
   public register(values): Observable<any> {
     const url = this.configService.getConfig().app.mainApiDomain + '/register';
-    return this.http.post(url, values);
+    return this.http.post(url, values, {withCredentials: true});
+  }
+
+  /**
+   *
+   * @param data - this is raw response from login request
+   * @private
+   */
+  public buildUserData(data: any): User {
+    const family: Family = new Family(data.account.id, data.account.name, data.account.suspended);
+    return new User(data.user.id, data.user.email, data.user.name, data.user.suspended, family);
   }
 
   public login(values): Observable<any> {

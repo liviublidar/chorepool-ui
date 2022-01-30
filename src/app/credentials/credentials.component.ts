@@ -23,6 +23,8 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 
+import { Router } from "@angular/router";
+
 @Component({
   selector: 'app-credentials',
   templateUrl: './credentials.component.html',
@@ -33,7 +35,8 @@ export class CredentialsComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private router: Router,
   ) { }
 
   public showRegisterForm: boolean = false;
@@ -105,10 +108,11 @@ export class CredentialsComponent implements OnInit {
   }, { validators: [passwordMatchValidator, hasNoErrors], updateOn: 'change'});
 
   ngOnInit() {
-    setTimeout(() => {
-      this.showSplash = false;
-    }, 2000);
+    this.initSplash();
+    this.initFamilyCodeClearer();
+  }
 
+  private initFamilyCodeClearer(): void {
     this.registerForm.controls.familyCodeControl.valueChanges.subscribe(value => {
       this.hasFamily = value;
       if (this.hasFamily === true) {
@@ -120,6 +124,12 @@ export class CredentialsComponent implements OnInit {
         this.registerForm.get('code').updateValueAndValidity();
       }
     });
+  }
+
+  private initSplash(): void {
+    setTimeout(() => {
+      this.showSplash = false;
+    }, 2000);
   }
 
   private clearLoginForm(): void {
@@ -155,17 +165,18 @@ export class CredentialsComponent implements OnInit {
 
   public onLoginSubmit(): void {
     this.authService.login(this.loginForm.value).subscribe((data) => {
-      console.log(data);
+      this.authService.setAuthenticatedUser(this.authService.buildUserData(data));
+      this.router.navigate(['/dashboard']);
     });
-
   }
 
   public onRegisterSubmit(): void {
     if (this.registerForm.errors){
-      alert('complete the form with correct values');
+      alert('Please complete the form with correct values');
     } else {
-      this.authService.register(this.registerForm.value).subscribe((response) => {
-        console.log('register response', response);
+      this.authService.register(this.registerForm.value).subscribe((data) => {
+        this.authService.setAuthenticatedUser(this.authService.buildUserData(data));
+        this.router.navigate(['/dashboard']);
       });
     }
   }
