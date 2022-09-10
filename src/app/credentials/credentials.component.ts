@@ -1,9 +1,9 @@
-function passwordMatchValidator(g: FormGroup) {
+function passwordMatchValidator(g: UntypedFormGroup) {
   return g.get('registerPassword').value === g.get('registerPassword_confirmation').value
     ? null : {'mismatch': true};
 }
 
-function hasNoErrors(g: FormGroup) {
+function hasNoErrors(g: UntypedFormGroup) {
   for (const [formControlName, formControl] of Object.entries(g.controls)) {
     if (formControl.errors){
       console.log('this is what i think is error', formControl.errors);
@@ -16,9 +16,9 @@ function hasNoErrors(g: FormGroup) {
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import {
-  FormGroup,
-  FormControl,
-  FormBuilder,
+  UntypedFormGroup,
+  UntypedFormControl,
+  UntypedFormBuilder,
   Validators,
   ValidationErrors,
 } from '@angular/forms';
@@ -34,7 +34,7 @@ import { Router } from "@angular/router";
 export class CredentialsComponent implements OnInit {
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private authService: AuthenticationService,
     private router: Router,
   ) { }
@@ -60,14 +60,14 @@ export class CredentialsComponent implements OnInit {
   /**
    * create the reactive login form
    */
-  public loginForm = new FormGroup({
-    email: new FormControl('', {
+  public loginForm = new UntypedFormGroup({
+    email: new UntypedFormControl('', {
       validators: [Validators.required, Validators.email, Validators.minLength(6),
         Validators.pattern(this.emailRegexpPatern)],
         // updateOn: 'blur'
     }),
 
-    password: new FormControl('', {
+    password: new UntypedFormControl('', {
       validators: [Validators.required, Validators.minLength(8),
         Validators.pattern(this.passwordRegexpPatter)],
     })
@@ -77,34 +77,34 @@ export class CredentialsComponent implements OnInit {
   /**
    * create reactive register form
    */
-  public registerForm = new FormGroup({
-    name: new FormControl('', {
+  public registerForm = new UntypedFormGroup({
+    name: new UntypedFormControl('', {
       validators: [Validators.required, Validators.minLength(3)],
     }),
 
-    dob: new FormControl('', {
+    dob: new UntypedFormControl('', {
       validators: [Validators.required],
     }),
 
-    email: new FormControl('', {
+    email: new UntypedFormControl('', {
       validators: [Validators.required, Validators.email, Validators.minLength(6),
         Validators.pattern(this.emailRegexpPatern)],
       // updateOn: 'blur'
     }),
 
-    registerPassword: new FormControl('', {
+    registerPassword: new UntypedFormControl('', {
       validators: [Validators.required, Validators.minLength(8),
         Validators.pattern(this.passwordRegexpPatter)],
     }),
 
-    code: new FormControl(''),
+    code: new UntypedFormControl(''),
 
-    registerPassword_confirmation: new FormControl('', {
+    registerPassword_confirmation: new UntypedFormControl('', {
       validators: [Validators.required]
     }),
 
-    familyCodeControl: new FormControl(''),
-    household: new FormControl(''),
+    familyCodeControl: new UntypedFormControl(''),
+    household: new UntypedFormControl(''),
   }, { validators: [passwordMatchValidator, hasNoErrors], updateOn: 'change'});
 
   ngOnInit() {
@@ -260,7 +260,7 @@ export class CredentialsComponent implements OnInit {
     this.showRegisterForm = !this.showRegisterForm;
   }
 
-  public noWhitespaceValidator(control: FormControl) {
+  public noWhitespaceValidator(control: UntypedFormControl) {
     const isWhitespace = (control.value || '').trim().length === 0;
     const isValid = !isWhitespace;
     return isValid ? null : { 'whitespace': true };
