@@ -18,14 +18,13 @@ export class AlreadyLoggedGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if(this.authenticationService.getAuthenticatedUser() !== null) {
       this.authenticationService.getUserFromToken().subscribe(data => {
         this.authenticationService.setAuthenticatedUser(this.authenticationService.buildUserData(data));
-        if(this.authenticationService.getAuthenticatedUser() !== null) {
+        if(this.authenticationService.isLoggedIn()) {
+          this.authenticationService.isUserLoggedSubject.next(true)
           this.router.navigate(['/dashboard']);
         }
       });
-    }
     return true;
   }
 }

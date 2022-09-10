@@ -18,7 +18,7 @@ export class LogoutInterceptor implements HttpInterceptor {
       },
       (e: HttpErrorResponse) => {
         if (e.status === 401 || e.status === 429) {
-          this.authenticationService.logout();
+          this.authenticationService.logout(e.status === 429);
         }
       }
     ));

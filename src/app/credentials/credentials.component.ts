@@ -22,8 +22,8 @@ import {
   Validators,
   ValidationErrors,
 } from '@angular/forms';
-
 import { Router } from "@angular/router";
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-credentials',
@@ -37,6 +37,7 @@ export class CredentialsComponent implements OnInit {
     private formBuilder: UntypedFormBuilder,
     private authService: AuthenticationService,
     private router: Router,
+    private snackbar: MatSnackBar
   ) { }
 
   public showRegisterForm: boolean = false;
@@ -164,10 +165,15 @@ export class CredentialsComponent implements OnInit {
   }
 
   public onLoginSubmit(): void {
-    this.authService.login(this.loginForm.value).subscribe((data) => {
-      this.authService.setAuthenticatedUser(this.authService.buildUserData(data));
-      this.router.navigate(['/dashboard']);
-    });
+    this.authService.login(this.loginForm.value).subscribe(
+      data => {
+        this.authService.setAuthenticatedUser(this.authService.buildUserData(data));
+        this.router.navigate(['/dashboard']);
+      },
+      httpError => {
+        this.snackbar.open(httpError.error.error, 'Dismiss');
+      }
+    );
   }
 
   public onRegisterSubmit(): void {

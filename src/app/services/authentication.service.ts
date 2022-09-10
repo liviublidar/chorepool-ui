@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ConfigService } from './config.service';
 import { User } from "../models/user";
 import { Router } from "@angular/router";
@@ -19,6 +19,8 @@ export class AuthenticationService {
   ) { }
 
   private localStorageUserKey = "user"
+
+  public isUserLoggedSubject: Subject<boolean> = new Subject<boolean>();
 
   public register(values): Observable<any> {
     const url = this.configService.getConfig().app.mainApiDomain + '/register';
@@ -47,18 +49,28 @@ export class AuthenticationService {
 
   public setAuthenticatedUser(user: User): void {
     localStorage.setItem(this.localStorageUserKey, JSON.stringify(user));
+    this.isUserLoggedSubject.next(true);
   }
 
   public getAuthenticatedUser(): User {
     return <User>JSON.parse(localStorage.getItem(this.localStorageUserKey));
   }
 
+  public isLoggedIn(): boolean {
+    return this.getAuthenticatedUser() !== null;
+  }
+
   private clearUserData(): void {
     localStorage.clear();
   }
 
-  public logout(): void {
+  public logout(preventCall?: boolean): void {
     this.clearUserData();
+    this.isUserLoggedSubject.next(false);
     this.router.navigate(['/']);
+    if(!preventCall){
+      const url = this.configService.getConfig().app.mainApiDomain + '/logout';
+      this.http.post(url, null, {withCredentials: true}).subscribe(value => {});
+    }
   }
 }
